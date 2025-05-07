@@ -7,7 +7,11 @@ orientation: columns
 
 ::: {.card title="How to read this map?"}
 
-This map
+This map organizes the tools from the Epiverse ecosystem based on the dependencies they are using.
+
+Tools using the same dependencies will be close to one another, while tools using different dependencies will be far away.
+
+It can help users to find tools using frameworks they are already familiar with (e.g., rstan, tidyverse, etc.)
 
 :::
 

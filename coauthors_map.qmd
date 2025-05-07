@@ -8,9 +8,14 @@ orientation: columns
 
 ::: {.card title="How to read this map?"}
 
-This map
+This map organizes the tools from the Epiverse ecosystem based on the authors who created them.
+
+Tools created by the same set of authors will be close to one another, while tools from completely unrelated groups will be far away.
+
+It can help users to find tools from development teams they already trust, or development teams using an approach that they like.
 
 :::
+
 
 ## Col
 
