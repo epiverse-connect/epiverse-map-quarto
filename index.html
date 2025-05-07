@@ -148,6 +148,12 @@ ul.task-list li input[type="checkbox"] {
 <li>use the same frameworks (e.g., tidyverse, stan, etc.) as the tools you are already using</li>
 <li>etc.</li>
 </ul>
+<p>These different visualizations could be mixed and matched to represent various features on the same page, with a potential trade-off on decreased readability.</p>
+<p>Simple ways to mix and match visualizations would be to:</p>
+<ul>
+<li>Use a map where position has one meaning (e.g., topic similarity), and edges between nodes express another meaning (e.g., dependency relationships)</li>
+<li>Use positions on a given map, or connected components on the network visualizations, to create groups that are represented via different colours on another map</li>
+</ul>
 
 
 
@@ -242,7 +248,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
+      var filterRegex = new RegExp("https:\/\/epiverse-connect\.github\.io\/epiverse-map-quarto\/");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
