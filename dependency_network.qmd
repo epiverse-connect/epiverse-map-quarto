@@ -3,7 +3,6 @@ format: dashboard
 orientation: columns
 ---
 
-
 ## Col {width=20%}
 
 ::: {.card title="How to read this map?"}
@@ -16,6 +15,7 @@ It can help users to find tools that are likely to be interoperable with one ano
 
 :::
 
+## Col
 
 ```{r, echo = FALSE}
 ctv_pkgs <- jsonlite::fromJSON("https://epiverse-connect.r-universe.dev/api/packages/")
