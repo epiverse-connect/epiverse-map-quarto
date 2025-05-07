@@ -9,6 +9,8 @@ website:
         text: Home
       - href: dependency_map.qmd
         text: Organize by dependencies
+      - href: dependency_network.qmd
+        text: Connect by dependencies
       - href: coauthors_map.qmd
         text: Organize by authors
 

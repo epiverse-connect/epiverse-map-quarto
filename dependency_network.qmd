@@ -1,0 +1,55 @@
+---
+format: dashboard
+orientation: columns
+---
+
+
+## Col {width=20%}
+
+::: {.card title="How to read this map?"}
+
+This visualization focuses on the dependency relationships between tools in the ecosystem. Tools are connected by an edge if one depends on the other.
+
+In this visualisation, the spatial position of the tools does not have any meaning. Points are positioned to maximize readability given the dependency relationships.
+
+It can help users to find tools that are likely to be interoperable with one another.
+
+:::
+
+
+```{r, echo = FALSE}
+ctv_pkgs <- jsonlite::fromJSON("https://epiverse-connect.r-universe.dev/api/packages/")
+
+edgelist <- ctv_pkgs |>
+  dplyr::select(Package, `_dependencies`) |>
+  tidyr::unnest(`_dependencies`) |>
+  dplyr::select("focal" = 1, "dep" = 2) |>
+  dplyr::distinct() |>
+  dplyr::add_row(focal = ctv_pkgs$Package, dep = ctv_pkgs$Package) |>
+  as.data.frame() |>
+  dplyr::filter(dep %in% focal)
+
+library(igraph)
+library(networkD3)
+
+nodes <- data.frame(
+  name = as.factor(unique(unlist(edgelist)))
+) |>
+  dplyr::mutate(group = as.numeric(name %in% ctv_pkgs$Package)) |>
+  dplyr::arrange(name)
+
+links <- edgelist |>
+  dplyr::transmute(
+    source = as.integer(factor(focal, levels = levels(nodes$name))) - 1,
+    target = as.integer(factor(dep,   levels = levels(nodes$name))) - 1
+  )
+
+forceNetwork(Links = links, Nodes = nodes,
+             Source = "source", Target = "target",
+             NodeID = "name", Group = "group",
+             zoom = TRUE,
+             opacityNoHover = 1, opacity = 1,
+             colourScale = JS("d3.scaleOrdinal([`#999999`, `#EE3388`])"),
+             fontSize = 15,
+             linkDistance = 20)
+```
