@@ -10,3 +10,10 @@ Through the different pages, you may be able to find new tools you may like base
 - work on the same scientific concepts as the tools you are already using
 - use the same frameworks (e.g., tidyverse, stan, etc.) as the tools you are already using
 - etc.
+
+These different visualizations could be mixed and matched to represent various features on the same page, with a potential trade-off on decreased readability.
+
+Simple ways to mix and match visualizations would be to:
+
+- Use a map where position has one meaning (e.g., topic similarity), and edges between nodes express another meaning (e.g., dependency relationships)
+- Use positions on a given map, or connected components on the network visualizations, to create groups that are represented via different colours on another map
