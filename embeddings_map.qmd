@@ -1,0 +1,21 @@
+---
+format: dashboard
+orientation: columns
+---
+
+## Col {width=20%}
+
+::: {.card title="How to read this map?"}
+
+This map organizes the tools from the Epiverse ecosystem based on the scientific topic they focus on.
+
+Tools focusing on similar scientific topics will be close to one another, while tools about completely unrelated topics will be far away.
+
+It can help users to find tools related to their area of interest by looking at neighbours of tools that they are already using.
+
+:::
+
+
+## Col
+
+Placeholder

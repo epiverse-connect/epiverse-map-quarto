@@ -13,6 +13,8 @@ website:
         text: Connect by dependencies
       - href: coauthors_map.qmd
         text: Organize by authors
+      - href: embeddings_map.qmd
+        text: Organize by topics
 
 format:
   html:
