@@ -12,6 +12,8 @@ This map organizes the tools from the Epiverse ecosystem based on the authors wh
 
 Tools created by the same set of authors will be close to one another, while tools from completely unrelated groups will be far away.
 
+Tools developed by authors who did not contribute to any other tools are dropped from this visualisation.
+
 It can help users to find tools from development teams they already trust, or development teams using an approach that they like.
 
 :::
@@ -54,15 +56,24 @@ authors_edgelist <- ctv_pkgs |>
 ```
 
 ```{r}
-aut_dist <- authors_edgelist |>
+aut_pkg_matrix <- authors_edgelist |>
   dplyr::mutate(placeholder = 1) |>
   tidyr::pivot_wider(names_from = auts, values_from = placeholder, values_fill = 0) |>
   tibble::column_to_rownames("Package")
 ```
 
 ```{r}
-aut_dist_coords <- aut_dist |>
+pkg_dist_from_auts <- aut_pkg_matrix |>
   dist(method = "binary") |>
+  as.matrix()
+
+# Drop pkgs that have 0 authors in common with any other
+pkg_dist_no_overlap <- pkg_dist_from_auts[
+  colSums(pkg_dist_from_auts) < nrow(pkg_dist_from_auts) - 1,
+  rowSums(pkg_dist_from_auts) < ncol(pkg_dist_from_auts) - 1
+]
+
+pkg_dist <- pkg_dist_no_overlap |>
   cmdscale() |>
   as.data.frame() |>
   setNames(paste0("coord", 1:2)) |>
@@ -72,7 +83,7 @@ aut_dist_coords <- aut_dist |>
 ```{r}
 library(ggplot2)
 
-aut_dist_coords |>
+pkg_dist |>
   ggplot(aes(x = coord1, y = coord2, label = package)) +
     geom_point() +
     theme_void() +
