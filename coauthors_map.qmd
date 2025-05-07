@@ -1,0 +1,75 @@
+---
+format: dashboard
+orientation: columns
+---
+
+
+## Col {width=20%}
+
+::: {.card title="How to read this map?"}
+
+This map
+
+:::
+
+## Col
+
+```{r, cache = T}
+ctv_pkgs <- jsonlite::fromJSON("https://epiverse-connect.r-universe.dev/api/packages/")
+
+authors_edgelist <- ctv_pkgs |>
+  dplyr::mutate(
+    parsed_authors_r = purrr::map(authoritative::parse_authors_r(`Authors@R`), format, include = c("given", "family")),
+    parsed_authors = authoritative::parse_authors(Author),
+    .keep = "unused"
+  ) |>
+  dplyr::mutate(
+    auts = dplyr::coalesce(parsed_authors, parsed_authors_r),
+    auts = purrr::map(auts, stringi::stri_trans_general, "ASCII"),
+    auts = purrr::map(auts, stringr::str_replace_all, "[[:punct:]]", " "),
+    auts = purrr::map(auts, stringr::str_replace_all, "[[:space:]]+", " "),
+    auts = purrr::map(auts, stringr::str_remove_all, "\\b(User|Developer)\\b"),
+    auts = purrr::map(auts, trimws),
+    .keep = "unused"
+  ) |>
+  tidyr::unnest_longer(auts) |>
+  dplyr::mutate(auts = authoritative::expand_names(auts, auts)) |>
+  # Standardize capitalization
+  dplyr::mutate(
+    auts = stringr::str_to_title(auts)
+  ) |>
+  dplyr::mutate(auts = dplyr::case_when(
+    auts == "Lozano Jose E" ~ "Jose Lozano Alonso",
+    auts == "Kevis Weiss" ~ "Kevin Weiss",
+    auts == "Ahmad family = Rabiee" ~ "Ahmad Rabiee",
+    auts == "Ed Ionides" ~ "Edward Ionides",
+    TRUE ~ auts
+  )) |>
+  dplyr::select(Package, auts)
+```
+
+```{r}
+aut_dist <- authors_edgelist |>
+  dplyr::mutate(placeholder = 1) |>
+  tidyr::pivot_wider(names_from = auts, values_from = placeholder, values_fill = 0) |>
+  tibble::column_to_rownames("Package")
+```
+
+```{r}
+aut_dist_coords <- aut_dist |>
+  dist(method = "binary") |>
+  cmdscale() |>
+  as.data.frame() |>
+  setNames(paste0("coord", 1:2)) |>
+  tibble::rownames_to_column("package")
+```
+
+```{r}
+library(ggplot2)
+
+aut_dist_coords |>
+  ggplot(aes(x = coord1, y = coord2, label = package)) +
+    geom_point() +
+    theme_void() +
+    ggrepel::geom_text_repel()
+```

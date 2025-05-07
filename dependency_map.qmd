@@ -1,0 +1,58 @@
+---
+format: dashboard
+orientation: columns
+---
+
+## Col {width=20%}
+
+::: {.card title="How to read this map?"}
+
+This map
+
+:::
+
+## Col
+
+```{r}
+knitr::opts_chunk$set(
+  echo = FALSE
+)
+```
+
+```{r, cache = T}
+ctv_pkgs <- jsonlite::fromJSON("https://epiverse-connect.r-universe.dev/api/packages/")
+
+edgelist_ctv <- ctv_pkgs |>
+  dplyr::select(Package, `_dependencies`) |>
+  tidyr::unnest(`_dependencies`) |>
+  dplyr::select("focal" = 1, "dep" = 2) |>
+  dplyr::distinct() |>
+  dplyr::add_row(focal = ctv_pkgs$Package, dep = ctv_pkgs$Package) |>
+  as.data.frame()
+```
+
+```{r}
+dep_dist <- edgelist_ctv |>
+  dplyr::mutate(placeholder = 1) |>
+  tidyr::pivot_wider(names_from = dep, values_from = placeholder, values_fill = 0) |>
+  tibble::column_to_rownames("focal")
+```
+
+```{r}
+dep_dist_coords <- dep_dist |>
+  dist(method = "binary") |>
+  cmdscale() |>
+  as.data.frame() |>
+  setNames(paste0("coord", 1:2)) |>
+  tibble::rownames_to_column("package")
+```
+
+```{r}
+library(ggplot2)
+
+dep_dist_coords |>
+  ggplot(aes(x = coord1, y = coord2, label = package)) +
+    geom_point() +
+    theme_void() +
+    ggrepel::geom_text_repel()
+```
