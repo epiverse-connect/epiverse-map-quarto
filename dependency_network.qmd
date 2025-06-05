@@ -11,6 +11,8 @@ This visualization focuses on the dependency relationships between tools in the 
 
 In this visualisation, the spatial position of the tools does not have any meaning. Points are positioned to maximize readability given the dependency relationships.
 
+Tools with no dependency relationship with other tools from the ecosystem are not displayed.
+
 It can help users to find tools that are likely to be interoperable with one another.
 
 :::
@@ -18,38 +20,28 @@ It can help users to find tools that are likely to be interoperable with one ano
 ## Col
 
 ```{r, echo = FALSE}
-ctv_pkgs <- jsonlite::fromJSON("https://epiverse-connect.r-universe.dev/api/packages/")
+library(ggraph)
+library(igraph)
+
+ctv_pkgs <- jsonlite::fromJSON(
+  "https://epiverse-connect.r-universe.dev/api/packages/"
+)
 
 edgelist <- ctv_pkgs |>
   dplyr::select(Package, `_dependencies`) |>
   tidyr::unnest(`_dependencies`) |>
   dplyr::select("focal" = 1, "dep" = 2) |>
   dplyr::distinct() |>
-  dplyr::add_row(focal = ctv_pkgs$Package, dep = ctv_pkgs$Package) |>
   as.data.frame() |>
   dplyr::filter(dep %in% focal)
 
-library(igraph)
-library(networkD3)
-
-nodes <- data.frame(
-  name = as.factor(unique(unlist(edgelist)))
-) |>
-  dplyr::mutate(group = as.numeric(name %in% ctv_pkgs$Package)) |>
-  dplyr::arrange(name)
-
-links <- edgelist |>
-  dplyr::transmute(
-    source = as.integer(factor(focal, levels = levels(nodes$name))) - 1,
-    target = as.integer(factor(dep,   levels = levels(nodes$name))) - 1
-  )
-
-forceNetwork(Links = links, Nodes = nodes,
-             Source = "source", Target = "target",
-             NodeID = "name", Group = "group",
-             zoom = TRUE,
-             opacityNoHover = 1, opacity = 1,
-             colourScale = JS("d3.scaleOrdinal([`#999999`, `#EE3388`])"),
-             fontSize = 15,
-             linkDistance = 20)
+graph <- graph_from_data_frame(d = edgelist, directed = TRUE)
+graph <- delete_vertices(graph, which(degree(graph) == 1))
+```
+```{r}
+ggraph(graph) +
+  geom_edge_bundle_force() +
+  geom_node_point() +
+  geom_node_text(aes(label = name), nudge_y = 0.1) +
+  theme_void()
 ```
