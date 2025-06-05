@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>dependency_network – Epiverse-CONNECT map</title>
+<title>embeddings_map – Epiverse-CONNECT map</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -111,7 +111,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Organize by dependencies</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./dependency_network.html" aria-current="page"> 
+    <a class="nav-link" href="./dependency_network.html"> 
 <span class="menu-text">Connect by dependencies</span></a>
   </li>  
   <li class="nav-item">
@@ -119,7 +119,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Organize by authors</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./embeddings_map.html"> 
+    <a class="nav-link active" href="./embeddings_map.html" aria-current="page"> 
 <span class="menu-text">Organize by topics</span></a>
   </li>  
 </ul>
@@ -152,10 +152,9 @@ grid-auto-rows: minmax(0, 1fr);">
 How to read this map?
 </span></div></div>
 <div class="card-body html-fill-item html-fill-container">
-<p>This visualization focuses on the dependency relationships between tools in the ecosystem. Tools are connected by an edge if one depends on the other.</p>
-<p>In this visualisation, the spatial position of the tools does not have any meaning. Points are positioned to maximize readability given the dependency relationships.</p>
-<p>Tools with no dependency relationship with other tools from the ecosystem are not displayed.</p>
-<p>It can help users to find tools that are likely to be interoperable with one another.</p>
+<p>This map organizes the tools from the Epiverse ecosystem based on the scientific topic they focus on.</p>
+<p>Tools focusing on similar scientific topics will be close to one another, while tools about completely unrelated topics will be far away.</p>
+<p>It can help users to find tools related to their area of interest by looking at neighbours of tools that they are already using.</p>
 </div>
 <bslib-tooltip placement="auto" bsoptions="[]" data-require-bs-version="5" data-require-bs-caller="tooltip()">
     <template>Expand</template>
@@ -167,7 +166,7 @@ How to read this map?
 <div class="card cell bslib-card html-fill-container" data-bslib-card-init="" data-require-bs-caller="card()" data-full-screen="false">
 <div class="card-body html-fill-item html-fill-container">
 <div class="cell-output-display html-fill-item html-fill-container">
-<img src="dependency_network_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid quarto-dashboard-img-contain">
+<img src="embeddings_map_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid quarto-dashboard-img-contain">
 </div>
 </div>
 <bslib-tooltip placement="auto" bsoptions="[]" data-require-bs-version="5" data-require-bs-caller="tooltip()">
