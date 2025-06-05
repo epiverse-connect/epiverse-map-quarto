@@ -1,6 +1,8 @@
 ---
 format: dashboard
 orientation: columns
+execute:
+  echo: false
 ---
 
 ## Col {width=20%}
@@ -15,7 +17,43 @@ It can help users to find tools related to their area of interest by looking at 
 
 :::
 
-
 ## Col
 
-Placeholder
+```{text}
+#| eval: false
+#| echo: false
+import torch
+import pandas as pd
+
+embeddings = torch.load("data/corpus_embeddings.pth")
+
+pd.DataFrame(embeddings).to_csv("embeddings.csv", index = False)
+```
+
+```{r}
+embeddings <- read.csv("data/embeddings.csv")
+pkg_docs <- read.csv("data/analysis_df.csv")
+```
+
+```{r}
+library(dplyr)
+pkg_level_embeddings <- pkg_docs |>
+    distinct(package_name, cluster_id) |>
+    cbind(embeddings) |>
+    group_by(package_name) |>
+    summarize(across(starts_with("X"), median)) |>
+    ungroup() |>
+    tibble::column_to_rownames("package_name")
+```
+
+```{r}
+pca_embeddings <- prcomp(pkg_level_embeddings, scale. = TRUE)
+```
+
+```{r}
+library(ggplot2)
+library(ggfortify)
+autoplot(pca_embeddings) +
+  theme_void() +
+  ggrepel::geom_text_repel(aes(label = unique(pkg_docs$package_name)))
+```
